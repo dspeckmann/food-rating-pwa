@@ -3,8 +3,16 @@ import { ref } from 'vue'
 import Camera from 'simple-vue-camera'
 import RatedFood from '../domain/rated-food';
 import Rating from '../domain/rating';
+import Pet from '../domain/pet';
+import CreateFoodRating from '../domain/create-food-rating';
+import FoodRating from '../domain/food-rating';
+import { blobToBase64 } from '../utils';
+import { useAuth0 } from '@auth0/auth0-vue';
 
+const props = defineProps<{ pet: Pet }>()
 const emit = defineEmits(['ratingAdded', 'cancelled'])
+
+const { getAccessTokenSilently } = useAuth0()
 
 const pictureTaken = ref(false)
 const camera = ref<InstanceType<typeof Camera>>()
@@ -22,12 +30,21 @@ function cancel() {
 
 async function rate(rating: number) {
   if (picture) {
-    const ratedFood: RatedFood = {
-      picture,
-      rating,
-      date: new Date()
+    const accessToken = await getAccessTokenSilently()
+    const dto: CreateFoodRating = {
+      pictureDataString: await blobToBase64(picture),
+      rating: rating
     }
-    emit('ratingAdded', ratedFood)
+    const response = await fetch(`/api/pets/${props.pet.id}/ratings`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + accessToken,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dto)
+    })
+    const foodRating: FoodRating = await response.json()
+    emit('ratingAdded', foodRating)
   } else {
     restart()
   }

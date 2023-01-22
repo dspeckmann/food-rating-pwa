@@ -1,32 +1,41 @@
 <script setup lang="ts">
 import Camera from 'simple-vue-camera'
+import { computed } from 'vue';
+import FoodRating from '../domain/food-rating';
 import RatedFood from '../domain/rated-food';
 import Rating from '../domain/rating';
 
-defineProps<{ ratings: Array<RatedFood> }>()
+const props = defineProps<{ ratings: Array<FoodRating> }>()
 
-// TODO: Add computed for ordered ratings (by date)
-
-function getPictureUrl(picture: Blob) {
-  return URL.createObjectURL(picture)
+function getPictureUrl(rating: FoodRating) {
+  // return URL.createObjectURL(picture)
+  return rating.pictureDataString
 }
+
+function formatDate(rating: FoodRating): string {
+  const date = new Date(rating.createdAt)
+  return date.toLocaleDateString()
+}
+
+const orderedRatings = computed(() => {
+  return props.ratings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+})
 </script>
 
 <template>
-  <h1 class="title mt-4" v-if="ratings.length">Bewertungen</h1>
-  <p class="mt-4" v-else>Du hast noch kein Futter bewertet.</p>
-  <div class="card mb-4" v-for="ratedFood of ratings">
+  <p class="mt-4" v-if="ratings.length < 1">Du hast noch kein Futter bewertet.</p>
+  <div class="card mb-4" v-for="foodRating of orderedRatings">
     <div class="card-image">
       <figure class="image is-square">
-        <img :src="getPictureUrl(ratedFood.picture)">
+        <img :src="getPictureUrl(foodRating)">
       </figure>
     </div>
     <div class="card-content">
       <div class="content">
-        <span v-if="ratedFood.rating == Rating.Bad">😾</span>
-        <span v-if="ratedFood.rating == Rating.Medium">😺</span>
-        <span v-if="ratedFood.rating == Rating.Good">😻</span>
-        <time :datetime="ratedFood.date.toISOString()" class="is-pulled-right">{{ratedFood.date.toLocaleDateString()}}</time>
+        <span v-if="foodRating.rating == Rating.Bad">😾</span>
+        <span v-if="foodRating.rating == Rating.Medium">😺</span>
+        <span v-if="foodRating.rating == Rating.Good">😻</span>
+        <time class="is-pulled-right">{{ formatDate(foodRating) }}</time>
       </div>
     </div>
   </div>
