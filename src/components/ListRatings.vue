@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import Camera from 'simple-vue-camera'
 import { computed } from 'vue';
 import FoodRating from '../domain/food-rating';
-import RatedFood from '../domain/rated-food';
 import Rating from '../domain/rating';
 
 const props = defineProps<{ ratings: Array<FoodRating> }>()
-
-function getPictureUrl(rating: FoodRating) {
-  // return URL.createObjectURL(picture)
-  return rating.pictureDataString
-}
 
 function formatDate(rating: FoodRating): string {
   const date = new Date(rating.createdAt)
@@ -27,7 +20,7 @@ const orderedRatings = computed(() => {
   <div class="card mb-4" v-for="foodRating of orderedRatings">
     <div class="card-image">
       <figure class="image is-square">
-        <img :src="getPictureUrl(foodRating)">
+        <img :src="foodRating.pictureDataString">
       </figure>
     </div>
     <div class="card-content">

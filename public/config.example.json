@@ -1,0 +1,7 @@
+{
+    "auth0": {
+        "domain": "auth.example.org",
+        "clientId": "abcd1234",
+        "audience": "http://localhost:5000"
+    }
+}

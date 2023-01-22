@@ -3,33 +3,27 @@
 
 
   <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import RatedFood from '../domain/rated-food';
-import Rating from '../domain/rating';
-import { useAuth0 } from '@auth0/auth0-vue';
+import { inject, onMounted, ref } from 'vue'
 import FoodRating from '../domain/food-rating';
 import Pet from '../domain/pet';
 import ListRatings from './ListRatings.vue'
 import AddRating from './AddRating.vue'
+import { Axios } from 'axios';
 
 const props = defineProps<{ pet: Pet }>()
 
-const { getAccessTokenSilently } = useAuth0()
+const axios = inject<Axios>('axios')
+if (!axios) {
+  throw new Error('Error while loading axios.')
+}
 
 const addingRating = ref(false)
 const ratings = ref(new Array<FoodRating>())
 const isLoading = ref(true)
 
 onMounted(async () => {
-  const accessToken = await getAccessTokenSilently()
-  const response = await fetch(`/api/pets/${props.pet.id}/ratings`, {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + accessToken,
-      'Content-Type': 'application/json'
-    }
-  })
-  ratings.value = await response.json()
+  const response = await axios.get(`/pets/${props.pet.id}/ratings`)
+  ratings.value = response.data
   isLoading.value = false
 })
 

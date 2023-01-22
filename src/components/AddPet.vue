@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import Camera from 'simple-vue-camera'
-import Rating from '../domain/rating';
-import { useAuth0 } from '@auth0/auth0-vue';
+import { inject, ref } from 'vue'
 import Pet from '../domain/pet';
-
-const { getAccessTokenSilently } = useAuth0()
+import { Axios } from 'axios';
 
 const emit = defineEmits(['petAdded'])
+
+const axios = inject<Axios>('axios')
+if (!axios) {
+  throw new Error('Error while loading axios.')
+}
 
 const petName = ref('')
 const isLoading = ref(false)
@@ -15,16 +16,8 @@ const isLoading = ref(false)
 async function addPet() {
     if (petName) {
         isLoading.value = true
-        const accessToken = await getAccessTokenSilently()
-        const response = await fetch('/api/pets', {
-            method: 'POST',
-            headers: {
-              'Authorization': 'Bearer ' + accessToken,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name: petName.value })
-        })
-        const pet: Pet = await response.json()
+        const response = await axios!.post('/pets', { name: petName.value })
+        const pet: Pet = response.data
         isLoading.value = false
         emit('petAdded', pet)
     }

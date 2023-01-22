@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 import Camera from 'simple-vue-camera'
-import RatedFood from '../domain/rated-food';
 import Rating from '../domain/rating';
 import Pet from '../domain/pet';
 import CreateFoodRating from '../domain/create-food-rating';
 import FoodRating from '../domain/food-rating';
 import { blobToBase64 } from '../utils';
-import { useAuth0 } from '@auth0/auth0-vue';
+import { Axios } from 'axios';
 
 const props = defineProps<{ pet: Pet }>()
 const emit = defineEmits(['ratingAdded', 'cancelled'])
 
-const { getAccessTokenSilently } = useAuth0()
+const axios = inject<Axios>('axios')
+if (!axios) {
+  throw new Error('Error while loading axios.')
+}
 
 const pictureTaken = ref(false)
 const camera = ref<InstanceType<typeof Camera>>()
@@ -30,20 +32,12 @@ function cancel() {
 
 async function rate(rating: number) {
   if (picture) {
-    const accessToken = await getAccessTokenSilently()
     const dto: CreateFoodRating = {
       pictureDataString: await blobToBase64(picture),
       rating: rating
     }
-    const response = await fetch(`/api/pets/${props.pet.id}/ratings`, {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + accessToken,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dto)
-    })
-    const foodRating: FoodRating = await response.json()
+    const response = await axios!.post(`/pets/${props.pet.id}/ratings`, dto)
+    const foodRating: FoodRating = await response.data
     emit('ratingAdded', foodRating)
   } else {
     restart()
