@@ -13,7 +13,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/setup-node@v3.6.0
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag food-rating-pwa:$(date +%s)
+    - uses: actions/setup-node@v3.6.0
+    - name: Docker Login
+      uses: docker/login-action@v2.1.0
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v3.3.0
+      with:
+        tags: "dspeckmann/food-rating-pwa:latest"
+        push: true
