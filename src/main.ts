@@ -4,6 +4,8 @@ import App from './App.vue'
 import { createAuth0 } from '@auth0/auth0-vue'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
+import { createRouter, createWebHistory } from 'vue-router'
+import routes from './routes'
 
 // Load config file for environment-specific settings.
 const response = await fetch('/config.json')
@@ -23,6 +25,12 @@ app.use(
         cacheLocation: 'localstorage'
     })
 )
+
+app.use(createRouter({
+    history: createWebHistory(),
+    routes,
+    linkActiveClass: 'is-active'
+}))
 
 axios.defaults.baseURL = config.apiBaseUrl
 app.use(VueAxios, axios)

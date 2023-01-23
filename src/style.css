@@ -1,5 +1,8 @@
 #app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+}
+
+.progress-bar-wrapper {
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: center;
 }

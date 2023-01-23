@@ -42,16 +42,15 @@ function ratingCancelled() {
 </script>
 
 <template>
-  <nav class="navbar is-fixed-top p-4" v-if="!addingRating">
-    <button
-      class="button is-primary is-fullwidth is-fixed-top"
-      :class="{ 'is-loading': isLoading }" 
-      :disabled="isLoading"
-      @click="addRating"
-      id="add-rating-button">
-      Neues Futter bewerten
-    </button>
-  </nav>
+  <button
+    v-if="!addingRating"
+    class="button is-primary is-fullwidth is-fixed-top"
+    :class="{ 'is-loading': isLoading }" 
+    :disabled="isLoading"
+    @click="addRating"
+    id="add-rating-button">
+    Neues Futter bewerten
+  </button>
   <AddRating v-if="addingRating" @rating-added="ratingAdded" @cancelled="ratingCancelled" :pet="pet" />
   <template v-else>
     <h1 class="title mt-4">Bewertungen für {{ pet.name }}</h1>

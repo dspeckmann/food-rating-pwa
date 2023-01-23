@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import PetOverview from './components/PetOverview.vue'
-import AddPet from './components/AddPet.vue'
-import { inject, onMounted, Ref, ref } from 'vue';
+import { computed, inject, onMounted, Ref, ref } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
-import Pet from './domain/pet';
 import { Axios } from 'axios';
+import { RouterView, useRoute, useRouter } from 'vue-router';
 
 const { loginWithRedirect, getAccessTokenSilently, user, isAuthenticated, logout } = useAuth0()
 
-const currentPet: Ref<Pet | undefined> = ref()
+
+const router = useRouter()
+const route = useRoute()
+const currentPageTitle = computed(() => route.meta?.title ?? 'Food Rating' )
 const isLoading = ref(true)
+const navExpanded = ref(false)
+
+router.beforeResolve(to => {
+  navExpanded.value = false
+  return true
+})
 
 const axios = inject<Axios>('axios')
 if (!axios) {
@@ -23,6 +30,7 @@ onMounted(async () => {
     const accessToken = await getAccessTokenSilently()
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken
     axios.defaults.headers.common['Content-Type'] = 'application/json'
+    isLoading.value = false
   } catch (e: any) {
     if (e.error === 'login_required') {
       await loginWithRedirect()
@@ -30,49 +38,49 @@ onMounted(async () => {
       console.error(e)
     }
   }
-
-  await getPets()
 })
 
-async function getPets() {
-  // TODO: Why is the ! necessary if we check this before?
-  const response = await axios!.get('/pets')
-  const pets: Pet[] = response.data
-  if (pets.length) {
-    currentPet.value = pets[0]
-  }
-  isLoading.value = false
-}
-
-async function petAdded(pet: Pet) {
-  currentPet.value = pet
-}
+const toggleNav = () => navExpanded.value = !navExpanded.value
 </script>
 
 <template>
+  <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <div class="navbar-item page-title">🐈 {{ currentPageTitle }}</div>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleNav()">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-menu" :class="{ 'is-active': navExpanded }">
+      <div class="navbar-start">
+        <router-link class="navbar-item" to="/">Home</router-link>
+        <!-- <router-link class="navbar-item" to="/calendar">Kalender</router-link> -->
+        <router-link class="navbar-item" to="/pets">Haustiere</router-link>
+        <router-link class="navbar-item" to="/settings">Einstellungen</router-link>
+      </div>
+    </div>
+  </nav>
   <div class="p-4 body-wrapper">
     <div v-if="isLoading" class="progress-bar-wrapper">
-      <span class="is-center">Haustiere laden...</span>
+      <span class="is-center">Anmelden...</span>
       <progress class="progress is-primary mt-4" max="100"></progress>
     </div>
-    <template v-else>
-      <PetOverview :pet="currentPet" v-if="currentPet" />
-      <AddPet @pet-added="petAdded" v-else />
-    </template>
+    <RouterView v-else />
   </div>
-  <footer class="footer pb-6" v-if="isAuthenticated && user">Angemeldet als {{ user.email }}. <a @click="logout()">Logout.</a></footer>
 </template>
 
 <style scoped>
-.body-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #353535;
 }
 
-.progress-bar-wrapper {
-  margin-top: auto;
-  margin-bottom: auto;
-  text-align: center;
+nav.navbar {
+  background-color: #f2f2f2;
 }
+
+/* TODO: Animate navigation? */
 </style>
