@@ -19,6 +19,8 @@ if (!axios) {
   throw new Error('Error while loading axios.')
 }
 
+const error = ref('')
+
 onMounted(async () => {
   try {
     // accessToken.value = await getAccessTokenSilently()
@@ -26,10 +28,15 @@ onMounted(async () => {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken
     axios.defaults.headers.common['Content-Type'] = 'application/json'
   } catch (e: any) {
-    await loginWithRedirect()
+    error.value = String(e)
+    if (e.error === 'login_required') {
+      await loginWithRedirect()
+    } else {
+      error.value = String(e)
+    }
   }
 
-  await getPets()
+  //await getPets()
 })
 
 async function getPets() {
@@ -49,6 +56,9 @@ async function petAdded(pet: Pet) {
 
 <template>
   <div class="p-4 body-wrapper">
+    <article class="message is-danger" v-if="error">
+      <div class="message-body">{{ error }}</div>
+    </article>
     <div v-if="isLoading" class="progress-bar-wrapper">
       <span class="is-center">Haustiere laden...</span>
       <progress class="progress is-primary mt-4" max="100"></progress>
