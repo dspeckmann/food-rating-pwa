@@ -2,14 +2,11 @@
 import PetOverview from './components/PetOverview.vue'
 import AddPet from './components/AddPet.vue'
 import { inject, onMounted, Ref, ref } from 'vue';
-import RatedFood from './domain/rated-food';
 import { useAuth0 } from '@auth0/auth0-vue';
-import { getPackedSettings } from 'http2';
 import Pet from './domain/pet';
 import { Axios } from 'axios';
 
 const { loginWithRedirect, getAccessTokenSilently, user, isAuthenticated, logout } = useAuth0()
-// const accessToken = ref('')
 
 const currentPet: Ref<Pet | undefined> = ref()
 const isLoading = ref(true)
@@ -19,24 +16,22 @@ if (!axios) {
   throw new Error('Error while loading axios.')
 }
 
-const error = ref('')
-
 onMounted(async () => {
   try {
-    // accessToken.value = await getAccessTokenSilently()
+    // TODO: Handle redirect before calling this to fix iOS?
+    await new Promise(resolve => window.setTimeout( resolve, 1000))
     const accessToken = await getAccessTokenSilently()
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken
     axios.defaults.headers.common['Content-Type'] = 'application/json'
   } catch (e: any) {
-    error.value = String(e)
     if (e.error === 'login_required') {
       await loginWithRedirect()
     } else {
-      error.value = String(e)
+      console.error(e)
     }
   }
 
-  //await getPets()
+  await getPets()
 })
 
 async function getPets() {
@@ -56,9 +51,6 @@ async function petAdded(pet: Pet) {
 
 <template>
   <div class="p-4 body-wrapper">
-    <article class="message is-danger" v-if="error">
-      <div class="message-body">{{ error }}</div>
-    </article>
     <div v-if="isLoading" class="progress-bar-wrapper">
       <span class="is-center">Haustiere laden...</span>
       <progress class="progress is-primary mt-4" max="100"></progress>

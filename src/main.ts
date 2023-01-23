@@ -17,8 +17,10 @@ app.use(
         clientId: config.auth0.clientId,
         authorizationParams: {
             redirect_uri: window.location.origin,
-            audience: config.auth0.audience
-        }
+            audience: config.auth0.audience,
+            
+        },
+        cacheLocation: 'localstorage'
     })
 )
 
