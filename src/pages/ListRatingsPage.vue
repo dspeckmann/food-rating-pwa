@@ -4,6 +4,7 @@ import { inject, onMounted, Ref, ref } from 'vue';
 import Pet from '../domain/pet';
 import PetOverview from '../components/PetOverview.vue'
 import AddPet from '../components/AddPet.vue'
+import { useRouter } from 'vue-router';
 
 const axios = inject<Axios>('axios')
 if (!axios) {
@@ -23,6 +24,8 @@ async function getPets() {
   const pets: Pet[] = response.data
   if (pets.length) {
     currentPet.value = pets[0]
+  } else {
+    useRouter().push('/pets/add')
   }
   isLoading.value = false
 }
@@ -39,6 +42,5 @@ async function petAdded(pet: Pet) {
   </div>
   <template v-else>
     <PetOverview :pet="currentPet" v-if="currentPet" />
-    <AddPet @pet-added="petAdded" v-else />
   </template>
 </template>

@@ -1,28 +1,20 @@
 <script setup lang="ts">
-import { Axios } from 'axios';
-import { inject, onMounted, Ref, ref } from 'vue';
-import Pet from '../domain/pet';
+import { onMounted, ref } from 'vue';
 import AddPetPrompt from '../components/AddPetPrompt.vue'
+import { usePetStore } from '../stores/pet-store';
 
-const axios = inject<Axios>('axios')
-if (!axios) {
-  throw new Error('Error while loading axios.')
-}
-
-const pets: Ref<Pet[]> = ref([])
-const isLoading = ref(true)
+const { pets, loadPets, isLoading } = usePetStore()
 
 onMounted(async () => {
-  const response = await axios.get('/pets/')
-  pets.value = response.data
-  isLoading.value = false
+  await loadPets()
 })
 </script>
 
 <template>
-  <template v-for="pet of pets" v-if="pets.length">
-    <router-link :to="{ name: 'EditPet', params: { id: pet.id }}">
-      <div class="card mb-4" v-for="pet of pets" v-if="pets.length">
+  <template v-if="pets.length">
+    <!-- TODO: Order by updatedAt -->
+    <router-link v-for="pet of pets" :to="{ name: 'EditPet', params: { id: pet.id }}">
+      <div class="card mb-4">
         <div class="card-image">
           <figure class="image is-square">
             <img /> <!-- TODO: Add picture-->
@@ -33,6 +25,7 @@ onMounted(async () => {
         </div>
       </div>
     </router-link>
+    <router-link class="button is-primary" to="/pets/add">Weiteres Haustier hinzufügen</router-link>
   </template>
   <AddPetPrompt v-else />
 </template>

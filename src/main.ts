@@ -6,6 +6,7 @@ import VueAxios from 'vue-axios'
 import axios from 'axios'
 import { createRouter, createWebHistory } from 'vue-router'
 import routes from './routes'
+import VCalendar from 'v-calendar';
 
 // Load config file for environment-specific settings.
 const response = await fetch('/config.json')
@@ -31,6 +32,8 @@ app.use(createRouter({
     routes,
     linkActiveClass: 'is-active'
 }))
+
+app.use(VCalendar, {})
 
 axios.defaults.baseURL = config.apiBaseUrl
 app.use(VueAxios, axios)
