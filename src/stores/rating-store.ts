@@ -1,11 +1,12 @@
 import { Axios } from "axios";
-import { inject, Ref, ref } from "vue";
+import { inject, Ref, ref, toRaw } from "vue";
+import CreateRating from "../domain/create-rating";
 import Pet from "../domain/pet";
 
 const pets: Ref<Pet[]> = ref([])
 const isLoading = ref(false)
 
-export function usePetStore() {
+export function useRatingStore() {
   const axios = inject<Axios>('axios')
   if (!axios) {
     throw new Error('Error while loading axios.')
@@ -18,7 +19,7 @@ export function usePetStore() {
     pets.value = response.data
   }
 
-  const addPet = async (pet: Pet) => {
+  const addRating = async (rating: CreateRating) => {
     isLoading.value = true
     const response = await axios.post('/pets/', pet)
     const newPet: Pet = response.data
@@ -32,11 +33,7 @@ export function usePetStore() {
     const response = await axios.put(`/pets/${pet.id}`, pet)
     const updatedPet: Pet = response.data
     const i = pets.value.findIndex(p => p.id == updatedPet.id)
-    if (i != -1) {
-      pets.value[i] = updatedPet
-    } else {
-      pets.value.push(updatedPet)
-    }
+    pets.value[i] = updatedPet
     isLoading.value = false
     return updatedPet
   }
@@ -45,9 +42,7 @@ export function usePetStore() {
     isLoading.value = true
     const response = await axios.delete(`/pets/${petId}`)
     const i = pets.value.findIndex(p => p.id == petId)
-    if (i != -1) {
-      pets.value = pets.value.splice(i, 1)
-    }
+    pets.value = pets.value.splice(i, 1)
     isLoading.value = false
   }
 
@@ -66,7 +61,7 @@ export function usePetStore() {
   return {
     pets,
     loadPets,
-    addPet,
+    addRating,
     updatePet,
     deletePet,
     getPetById,

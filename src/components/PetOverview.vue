@@ -1,14 +1,10 @@
-
-
-
-
-  <script setup lang="ts">
+<script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
-import FoodRating from '../domain/food-rating';
-import Pet from '../domain/pet';
+import Rating from '../domain/rating'
+import Pet from '../domain/pet'
 import ListRatings from './ListRatings.vue'
 import AddRating from './AddRating.vue'
-import { Axios } from 'axios';
+import { Axios } from 'axios'
 
 const props = defineProps<{ pet: Pet }>()
 
@@ -18,7 +14,7 @@ if (!axios) {
 }
 
 const addingRating = ref(false)
-const ratings = ref(new Array<FoodRating>())
+const ratings = ref(new Array<Rating>())
 const isLoading = ref(true)
 
 onMounted(async () => {
@@ -31,7 +27,7 @@ function addRating() {
   addingRating.value = true
 }
 
-function ratingAdded(newRating: FoodRating) {
+function ratingAdded(newRating: Rating) {
   ratings.value.push(newRating)
   addingRating.value = false
 }
@@ -42,15 +38,15 @@ function ratingCancelled() {
 </script>
 
 <template>
-  <button
+  <router-link
     v-if="!addingRating"
     class="button is-primary is-fullwidth is-fixed-top"
     :class="{ 'is-loading': isLoading }" 
     :disabled="isLoading"
-    @click="addRating"
+    :to="{ name: 'AddRating', params: { petId: pet.id }}"
     id="add-rating-button">
     Neues Futter bewerten
-  </button>
+  </router-link>
   <AddRating v-if="addingRating" @rating-added="ratingAdded" @cancelled="ratingCancelled" :pet="pet" />
   <template v-else>
     <h1 class="title mt-4">Bewertungen für {{ pet.name }}</h1>

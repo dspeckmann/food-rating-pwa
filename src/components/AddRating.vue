@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue'
 import Camera from 'simple-vue-camera'
-import Rating from '../domain/rating';
-import Pet from '../domain/pet';
-import CreateFoodRating from '../domain/create-food-rating';
-import FoodRating from '../domain/food-rating';
-import { blobToBase64 } from '../utils';
-import { Axios } from 'axios';
+import Taste from '../domain/taste'
+import Pet from '../domain/pet'
+import { Axios } from 'axios'
 
 const props = defineProps<{ pet: Pet }>()
 const emit = defineEmits(['ratingAdded', 'cancelled'])
@@ -31,17 +28,17 @@ function cancel() {
 }
 
 async function rate(rating: number) {
-  if (picture) {
-    const dto: CreateFoodRating = {
-      pictureDataString: await blobToBase64(picture),
-      rating: rating
-    }
-    const response = await axios!.post(`/pets/${props.pet.id}/ratings`, dto)
-    const foodRating: FoodRating = await response.data
-    emit('ratingAdded', foodRating)
-  } else {
-    restart()
-  }
+  // if (picture) {
+  //   const dto: CreateFoodRating = {
+  //     pictureDataString: await blobToBase64(picture),
+  //     rating: rating
+  //   }
+  //   const response = await axios!.post(`/pets/${props.pet.id}/ratings`, dto)
+  //   const foodRating: FoodRating = await response.data
+  //   emit('ratingAdded', foodRating)
+  // } else {
+  //   restart()
+  // }
 }
 
 async function restart() {
@@ -54,9 +51,9 @@ async function restart() {
   <Camera autoplay :resolution="{ width: 1080, height: 1080 }" ref="camera">
     <div class="button-overlay" v-if="pictureTaken">
       <div class="thumbs-container">
-        <button class="button is-large" @click="rate(Rating.Bad)">😾</button>
-        <button class="button is-large" @click="rate(Rating.Medium)">🐱</button>
-        <button class="button is-large" @click="rate(Rating.Good)">😻</button>
+        <button class="button is-large" @click="rate(Taste.Bad)">😾</button>
+        <button class="button is-large" @click="rate(Taste.Medium)">🐱</button>
+        <button class="button is-large" @click="rate(Taste.Good)">😻</button>
       </div>
       <button class="button" @click="restart" id="restart-button"><i class="fa-solid fa-arrows-rotate mr-2"></i> Neues Foto</button>
     </div>

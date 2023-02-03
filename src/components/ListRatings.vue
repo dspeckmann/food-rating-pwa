@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import FoodRating from '../domain/food-rating';
-import Rating from '../domain/rating';
+import Rating from '../domain/rating'
+import Taste from '../domain/taste'
 
-const props = defineProps<{ ratings: Array<FoodRating> }>()
+const props = defineProps<{ ratings: Array<Rating> }>()
 
-function formatDate(rating: FoodRating): string {
+function formatDate(rating: Rating): string {
   const date = new Date(rating.createdAt)
   return date.toLocaleDateString()
 }
@@ -25,9 +25,9 @@ const orderedRatings = computed(() => {
     </div>
     <div class="card-content">
       <div class="content">
-        <span v-if="foodRating.rating == Rating.Bad">😾</span>
-        <span v-if="foodRating.rating == Rating.Medium">😺</span>
-        <span v-if="foodRating.rating == Rating.Good">😻</span>
+        <span v-if="foodRating.taste == Taste.Bad">😾</span>
+        <span v-if="foodRating.taste == Taste.Medium">😺</span>
+        <span v-if="foodRating.taste == Taste.Good">😻</span>
         <time class="is-pulled-right">{{ formatDate(foodRating) }}</time>
       </div>
     </div>

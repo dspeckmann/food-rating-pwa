@@ -15,7 +15,7 @@ const routes: VueRouter.RouteRecordRaw[] = [
     { name: 'EditPet', path: '/pets/:id', component: EditPetPage, props: true, meta: { title: 'Haustier bearbeiten' } },
     { path: '/pets/add', component: AddPetPage, meta: { title: 'Haustier hinzufügen' } },
     // { path: '/pets/:id/ratings', component: ListRatingsPage },
-    { path: '/pets/:id/ratings/add', component: AddRatingPage, meta: { title: 'Futter bewerten' } },
+    { name: 'AddRating', path: '/pets/:petId/ratings/add', component: AddRatingPage, props: true, meta: { title: 'Futter bewerten' } },
     { path: '/settings', component: SettingsPage, meta: { title: 'Einstellungen' } },
 ]
 
