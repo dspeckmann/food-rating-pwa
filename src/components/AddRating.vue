@@ -33,7 +33,7 @@ async function rate(rating: number) {
   //     pictureDataString: await blobToBase64(picture),
   //     rating: rating
   //   }
-  //   const response = await axios!.post(`/pets/${props.pet.id}/ratings`, dto)
+  //   const response = await axios!.post(`/api/pets/${props.pet.id}/ratings`, dto)
   //   const foodRating: FoodRating = await response.data
   //   emit('ratingAdded', foodRating)
   // } else {

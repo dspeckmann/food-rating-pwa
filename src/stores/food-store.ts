@@ -14,14 +14,14 @@ export function useFoodStore() {
 
   const loadFoods = async () => {
     isLoading.value = true
-    const response = await axios.get('/foods/')
+    const response = await axios.get('/api/foods/')
     isLoading.value = false
     foods.value = response.data
   }
 
   const addFood = async (food: CreateFood) => {
     isLoading.value = true
-    const response = await axios.post('/foods/', food)
+    const response = await axios.post('/api/foods/', food)
     const newFood: Food = response.data
     foods.value.push(newFood)
     isLoading.value = false
@@ -30,7 +30,7 @@ export function useFoodStore() {
 
   const updateFood = async (foodId: string, food: CreateFood) => {
     isLoading.value = true
-    const response = await axios.put(`/foods/${foodId}`, food)
+    const response = await axios.put(`/api/foods/${foodId}`, food)
     const updatedFood: Food = response.data
     const i = foods.value.findIndex(p => p.id == updatedFood.id)
     if (i != -1) {
@@ -44,7 +44,7 @@ export function useFoodStore() {
 
   const deleteFood = async (foodId: string) => {
     isLoading.value = true
-    const response = await axios.delete(`/foods/${foodId}`)
+    const response = await axios.delete(`/api/foods/${foodId}`)
     const i = foods.value.findIndex(p => p.id == foodId)
     if (i != -1) {
       foods.value = foods.value.splice(i, 1)
@@ -58,7 +58,7 @@ export function useFoodStore() {
       isLoading.value = false
       return foods.value.find(p => p.id == foodId)
     } else {
-      const response = await axios.get(`/foods/${foodId}`)
+      const response = await axios.get(`/api/foods/${foodId}`)
       isLoading.value = false
       return response.data
     }

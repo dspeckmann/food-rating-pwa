@@ -1,9 +1,9 @@
 import { Axios } from "axios";
-import { inject, Ref, ref, toRaw } from "vue";
+import { inject, Ref, ref } from "vue";
 import CreateRating from "../domain/create-rating";
-import Pet from "../domain/pet";
+import Rating from "../domain/rating";
 
-const pets: Ref<Pet[]> = ref([])
+const ratings: Ref<Rating[]> = ref([])
 const isLoading = ref(false)
 
 export function useRatingStore() {
@@ -12,59 +12,35 @@ export function useRatingStore() {
     throw new Error('Error while loading axios.')
   }
 
-  const loadPets = async () => {
+  const loadRatings = async () => {
     isLoading.value = true
-    const response = await axios.get('/pets/')
+    const response = await axios.get('/api/ratings/')
     isLoading.value = false
-    pets.value = response.data
+    ratings.value = response.data
   }
 
   const addRating = async (rating: CreateRating) => {
     isLoading.value = true
-    const response = await axios.post('/pets/', pet)
-    const newPet: Pet = response.data
-    pets.value.push(newPet)
+    const response = await axios.post('/api/ratings/', rating)
+    const newRating: Rating = response.data
+    ratings.value.push(newRating)
     isLoading.value = false
-    return newPet
+    return newRating
   }
 
-  const updatePet = async (pet: Pet) => {
+  const deleteRating = async (ratingId: string) => {
     isLoading.value = true
-    const response = await axios.put(`/pets/${pet.id}`, pet)
-    const updatedPet: Pet = response.data
-    const i = pets.value.findIndex(p => p.id == updatedPet.id)
-    pets.value[i] = updatedPet
+    await axios.delete(`/api/ratings/${ratingId}`)
+    const i = ratings.value.findIndex(p => p.id == ratingId)
+    ratings.value = ratings.value.splice(i, 1)
     isLoading.value = false
-    return updatedPet
-  }
-
-  const deletePet = async (petId: string) => {
-    isLoading.value = true
-    const response = await axios.delete(`/pets/${petId}`)
-    const i = pets.value.findIndex(p => p.id == petId)
-    pets.value = pets.value.splice(i, 1)
-    isLoading.value = false
-  }
-
-  const getPetById = async (petId: string): Promise<Pet | undefined> => {
-    isLoading.value = true
-    if (pets.value.length) {
-      isLoading.value = false
-      return pets.value.find(p => p.id == petId)
-    } else {
-      const response = await axios.get(`/pets/${petId}`)
-      isLoading.value = false
-      return response.data
-    }
   }
 
   return {
-    pets,
-    loadPets,
+    ratings,
+    loadRatings,
     addRating,
-    updatePet,
-    deletePet,
-    getPetById,
+    deleteRating,
     isLoading
   }
 }

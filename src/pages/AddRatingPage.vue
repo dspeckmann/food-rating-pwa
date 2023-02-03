@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import PictureUploadControl from '../components/controls/PictureUploadControl.vue';
 import CreateFood from '../domain/create-food';
 import CreateRating from '../domain/create-rating';
 import Taste from '../domain/taste';
@@ -13,14 +15,17 @@ const props = defineProps<{ petId: string }>()
 
 const { foods, loadFoods, addFood, isLoading } = useFoodStore()
 const { addRating } = useRatingStore()
+const router = useRouter()
 
 const state = reactive({
   selectedFood: NEW_FOOD_VALUE,
   newFoodName: '',
-  foodComment: '',  // TODO: Update when new food is selected?
+  newFoodPictureId: undefined,
+  newFoodComment: '',
   ratingComment: '',
   taste: -1, // TODO: Type?
-  wellbeing: -1 // TODO: Type?
+  wellbeing: -1, // TODO: Type?
+  ratingPictureId: undefined
 })
 
 onMounted(async () => {
@@ -31,8 +36,8 @@ async function save() {
   if (state.selectedFood === NEW_FOOD_VALUE) {
     const newFood: CreateFood = {
       name: state.newFoodName,
-      comment: state.foodComment
-      // TODO: Picture
+      comment: state.newFoodComment,
+      pictureId: state.newFoodPictureId
     }
     const createdFood = await addFood(newFood)
     state.selectedFood = createdFood.id
@@ -43,18 +48,18 @@ async function save() {
     foodId: state.selectedFood,
     comment: state.ratingComment,
     taste: state.taste, // TODO: Only if valid value?
-    wellbeing: state.wellbeing // TODO: Only if valid value?
+    wellbeing: state.wellbeing, // TODO: Only if valid value?
+    pictureId: state.ratingPictureId
   }
 
-  // TODO: Call ratingStore.addRating
-  // TODO: Implement it first :)
-  console.log('SAVE!', state)
+  await addRating(newRating)
+  router.back()
 }
 </script>
 
 <template>
   <div class="field">
-    <label class="Label">Womit hast du dein Tier heute gefüttert?</label>
+    <label class="label">Womit hast du dein Tier heute gefüttert?</label>
     <div class="control">
       <div class="select is-fullwidth">
         <select v-model="state.selectedFood" :disabled="isLoading" :class="{ 'is-loading': isLoading }">
@@ -64,67 +69,75 @@ async function save() {
       </div>
     </div>
   </div>
-  <div class="field" v-if="state.selectedFood === NEW_FOOD_VALUE">
-    <label class="Label">Wie heißt das neue Futter?</label>
-    <div class="control">
-      <input class="input is-fullwidth" type="text" placeholder="Name des neuen Futters" v-model="state.newFoodName">
+  <template v-if="state.selectedFood === NEW_FOOD_VALUE">
+    <div class="field">
+      <label class="label">Wie heißt das neue Futter?</label>
+      <div class="control">
+        <input class="input is-fullwidth" type="text" placeholder="Name des neuen Futters" v-model="state.newFoodName">
+      </div>
     </div>
-  </div>
-  <div class="field">
-    <label class="Label">Hast du allgemeine Anmerkungen zu diesem Futter?</label>
-    <div class="control">
-      <textarea class="textarea is-fullwidth" placeholder="Anmerkungen zum Futter" v-model="state.foodComment"></textarea>
+    <div class="field">
+      <label class="label" for="pet-picture">Wie sieht die Verpackung des neuen Futters aus?</label>
+      <PictureUploadControl v-model="state.newFoodPictureId" />
     </div>
-  </div>
+    <div class="field">
+      <label class="label">Hast du allgemeine Anmerkungen zu diesem Futter?</label>
+      <div class="control">
+        <textarea class="textarea is-fullwidth" placeholder="Anmerkungen zum Futter" v-model="state.newFoodComment"></textarea>
+      </div>
+    </div>
+  </template>
   <!-- TODO: Picture of new food -->
   <div class="field">
-    <label class="Label">Wie hat deinem Tier das Futter geschmeckt?</label>
-    <div class="control">
+    <label class="label">Wie hat deinem Tier das Futter geschmeckt?</label>
+    <div class="control radio-container">
       <label class="radio">
-        <input type="radio" name="question" v-model="state.taste" :value="Taste.Good">
-        Lecker!
+        <input type="radio" name="rating-taste" v-model="state.taste" :value="Taste.Good">
+        😻 Lecker!
       </label>
       <label class="radio">
-        <input type="radio" name="question" v-model="state.taste" :value="Taste.Medium">
-        Ganz okay.
+        <input type="radio" name="rating-taste" v-model="state.taste" :value="Taste.Medium">
+        🐱 Ganz okay.
       </label>
       <label class="radio">
-        <input type="radio" name="question" v-model="state.taste" :value="Taste.Bad">
-        Ekelhaft...
+        <input type="radio" name="rating-taste" v-model="state.taste" :value="Taste.Bad">
+        😾 Ekelhaft...
       </label>
     </div>
   </div>
   <div class="field">
     <label class="label">Wie hat dein Tier das Futter vertragen?</label>
-    <div class="control">
+    <div class="control radio-container">
       <label class="radio">
-        <input type="radio" name="question" v-model="state.taste" :value="Wellbeing.Good">
-        Gut
+        <input type="radio" name="rating-wellbeing" v-model="state.wellbeing" :value="Wellbeing.Good">
+        😻 Gut
       </label>
       <label class="radio">
-        <input type="radio" name="question" v-model="state.taste" :value="Wellbeing.Medium">
-        Okay
+        <input type="radio" name="rating-wellbeing" v-model="state.wellbeing" :value="Wellbeing.Medium">
+        🐱 Okay
       </label>
       <label class="radio">
-        <input type="radio" name="question" v-model="state.taste" :value="Wellbeing.Bad">
-        Schlecht
-      </label>
-    </div>
-  </div>
-  <div class="field">
-    <div class="control">
-      <label class="radio">
-        <input type="radio" name="question">
-        Yes
+        <input type="radio" name="rating-wellbeing" v-model="state.wellbeing" :value="Wellbeing.Bad">
+        😾 Schlecht
       </label>
     </div>
   </div>
   <div class="field">
-    <label class="Label">Hast du weitere Anmerkungen zu dieser Fütterung?</label>
+    <label class="label" for="pet-picture">Wie sah das Futter in der Schale aus?</label>
+    <PictureUploadControl v-model="state.ratingPictureId" />
+  </div>
+  <div class="field">
+    <label class="label">Hast du weitere Anmerkungen zu dieser Fütterung?</label>
     <div class="control">
       <textarea class="textarea is-fullwidth" placeholder="Sonstige Anmerkungen zur Fütterung" v-model="state.ratingComment"></textarea>
     </div>
   </div>
-  <!-- TODO: Picture of rating -->
   <button class="button is-primary is-fullwidth" @click="save()">Speichern</button>
 </template>
+
+<style scoped>
+.radio-container {
+  display: flex;
+  justify-content: space-between;
+}
+</style>

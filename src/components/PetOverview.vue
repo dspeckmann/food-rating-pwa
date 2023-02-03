@@ -18,7 +18,7 @@ const ratings = ref(new Array<Rating>())
 const isLoading = ref(true)
 
 onMounted(async () => {
-  const response = await axios.get(`/pets/${props.pet.id}/ratings`)
+  const response = await axios.get(`/api/pets/${props.pet.id}/ratings`)
   ratings.value = response.data
   isLoading.value = false
 })

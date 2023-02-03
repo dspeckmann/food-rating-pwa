@@ -20,7 +20,7 @@ const orderedRatings = computed(() => {
   <div class="card mb-4" v-for="foodRating of orderedRatings">
     <div class="card-image">
       <figure class="image is-square">
-        <img :src="foodRating.pictureDataString">
+        <img :src="foodRating.picture?.presignedDownloadUrl">
       </figure>
     </div>
     <div class="card-content">

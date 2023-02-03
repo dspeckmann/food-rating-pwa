@@ -11,6 +11,8 @@ if (!axios) {
   throw new Error('Error while loading axios.')
 }
 
+const router = useRouter()
+
 const currentPet: Ref<Pet | undefined> = ref()
 const isLoading = ref(true)
 
@@ -20,12 +22,12 @@ onMounted(async () => {
 
 async function getPets() {
   // TODO: Why is the ! necessary if we check this before?
-  const response = await axios!.get('/pets')
+  const response = await axios!.get('/api/pets')
   const pets: Pet[] = response.data
   if (pets.length) {
     currentPet.value = pets[0]
   } else {
-    useRouter().push('/pets/add')
+    router.push('/pets/add')
   }
   isLoading.value = false
 }

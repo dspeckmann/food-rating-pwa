@@ -7,5 +7,5 @@ export default interface CreateRating {
     taste?: Taste
     wellbeing?: Wellbeing
     comment?: string
-    pictureDataString?: string
+    pictureId?: string
 }

@@ -1,5 +1,6 @@
 import { Axios } from "axios";
 import { inject, Ref, ref } from "vue";
+import CreatePet from "../domain/create-pet";
 import Pet from "../domain/pet";
 
 const pets: Ref<Pet[]> = ref([])
@@ -13,14 +14,14 @@ export function usePetStore() {
 
   const loadPets = async () => {
     isLoading.value = true
-    const response = await axios.get('/pets/')
+    const response = await axios.get('/api/pets/')
     isLoading.value = false
     pets.value = response.data
   }
 
-  const addPet = async (pet: Pet) => {
+  const addPet = async (pet: CreatePet) => {
     isLoading.value = true
-    const response = await axios.post('/pets/', pet)
+    const response = await axios.post('/api/pets/', pet)
     const newPet: Pet = response.data
     pets.value.push(newPet)
     isLoading.value = false
@@ -29,7 +30,7 @@ export function usePetStore() {
 
   const updatePet = async (pet: Pet) => {
     isLoading.value = true
-    const response = await axios.put(`/pets/${pet.id}`, pet)
+    const response = await axios.put(`/api/pets/${pet.id}`, pet)
     const updatedPet: Pet = response.data
     const i = pets.value.findIndex(p => p.id == updatedPet.id)
     if (i != -1) {
@@ -43,7 +44,7 @@ export function usePetStore() {
 
   const deletePet = async (petId: string) => {
     isLoading.value = true
-    const response = await axios.delete(`/pets/${petId}`)
+    const response = await axios.delete(`/api/pets/${petId}`)
     const i = pets.value.findIndex(p => p.id == petId)
     if (i != -1) {
       pets.value = pets.value.splice(i, 1)
@@ -57,7 +58,7 @@ export function usePetStore() {
       isLoading.value = false
       return pets.value.find(p => p.id == petId)
     } else {
-      const response = await axios.get(`/pets/${petId}`)
+      const response = await axios.get(`/api/pets/${petId}`)
       isLoading.value = false
       return response.data
     }
