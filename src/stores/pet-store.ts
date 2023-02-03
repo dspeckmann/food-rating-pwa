@@ -28,9 +28,9 @@ export function usePetStore() {
     return newPet
   }
 
-  const updatePet = async (pet: Pet) => {
+  const updatePet = async (id: string, pet: CreatePet) => {
     isLoading.value = true
-    const response = await axios.put(`/api/pets/${pet.id}`, pet)
+    const response = await axios.put(`/api/pets/${id}`, pet)
     const updatedPet: Pet = response.data
     const i = pets.value.findIndex(p => p.id == updatedPet.id)
     if (i != -1) {

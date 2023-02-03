@@ -16,7 +16,7 @@ onMounted(async () => {
 })
 
 async function save() {
-  await updatePet({ id: props.id, name: name.value })
+  await updatePet(props.id, { name: name.value })
   router.back()
 }
 

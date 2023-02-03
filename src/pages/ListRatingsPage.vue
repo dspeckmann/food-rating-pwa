@@ -3,7 +3,6 @@ import { Axios } from 'axios';
 import { inject, onMounted, Ref, ref } from 'vue';
 import Pet from '../domain/pet';
 import PetOverview from '../components/PetOverview.vue'
-import AddPet from '../components/AddPet.vue'
 import { useRouter } from 'vue-router';
 
 const axios = inject<Axios>('axios')

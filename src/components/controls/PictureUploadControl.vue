@@ -5,7 +5,7 @@ import { readFileAsDataUrl } from '../../utils'
 import NewPicture from '../../domain/new-picture';
 
 // Picture GUID as v-model
-const props = defineProps<{ modelValue: string }>()
+const props = defineProps<{ modelValue: string | undefined }>()
 const emit = defineEmits(['update:modelValue'])
 const isLoading = ref(false)
 const dataUrl: Ref<string | undefined> = ref(undefined)
