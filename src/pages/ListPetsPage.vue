@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import AddPetPrompt from '../components/AddPetPrompt.vue'
-import { usePetStore } from '../stores/pet-store';
+import { usePetStore } from '../stores/pet-store'
+import PetCard from '../components/PetCard.vue'
 
 const { pets, loadPets, isLoading } = usePetStore()
 
@@ -18,16 +19,7 @@ onMounted(async () => {
 <template>
   <template v-if="pets.length">
     <router-link v-for="pet of orderedPets" :to="{ name: 'EditPet', params: { id: pet.id }}">
-      <div class="card mb-4">
-        <div class="card-image">
-          <figure class="image is-square">
-            <img :src="pet.picture?.presignedDownloadUrl" />
-          </figure>
-        </div>
-        <div class="card-content">
-          <div class="content">{{ pet.name }}</div>
-        </div>
-      </div>
+      <PetCard :pet="pet" />
     </router-link>
     <router-link class="button is-primary" to="/pets/add">Weiteres Haustier hinzufügen</router-link>
   </template>
