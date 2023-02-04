@@ -2,23 +2,27 @@
 import { Axios } from 'axios';
 import { inject, onMounted, Ref, ref } from 'vue';
 import Pet from '../domain/pet';
-import PetOverview from '../components/PetOverview.vue'
+import ListRatings from '../components/ListRatings.vue'
 import { useRouter } from 'vue-router';
+import { useRatingStore } from '../stores/rating-store';
 
 const axios = inject<Axios>('axios')
 if (!axios) {
   throw new Error('Error while loading axios.')
 }
 
+const { ratings, loadRatings } = useRatingStore()
 const router = useRouter()
 
 const currentPet: Ref<Pet | undefined> = ref()
-const isLoading = ref(true)
+const isLoading = ref(ratings.value.length < 1)
 
 onMounted(async () => {
-  await getPets()
+  await loadRatings()
+  isLoading.value = false
 })
 
+// TODO: Check if the user already has a pet in App.vue?
 async function getPets() {
   // TODO: Why is the ! necessary if we check this before?
   const response = await axios!.get('/api/pets')
@@ -37,11 +41,15 @@ async function petAdded(pet: Pet) {
 </script>
 
 <template>
+  <router-link
+    class="button is-primary is-fullwidth is-fixed-top"
+    :to="{ name: 'AddRating' }"
+    id="add-rating-button">
+    Futter bewerten
+  </router-link>
+  <h1 class="title mt-4">Letzte Bewertungen</h1>
   <div v-if="isLoading" class="progress-bar-wrapper">
-    <span class="is-center">Haustiere laden...</span>
     <progress class="progress is-primary mt-4" max="100"></progress>
   </div>
-  <template v-else>
-    <PetOverview :pet="currentPet" v-if="currentPet" />
-  </template>
+  <ListRatings :ratings="ratings" v-else />
 </template>

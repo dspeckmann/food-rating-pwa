@@ -21,3 +21,12 @@ export function readFileAsDataUrl(file: File): Promise<string | undefined> {
       fr.readAsDataURL(file);
   });
 }
+
+export function getPrettyDate(dateString: string) {
+  // TODO: Directly create date when DTO is being created
+  return new Date(dateString).toLocaleDateString(undefined, { dateStyle: 'long' })
+}
+
+export function getPrettyTime(dateString: string) {
+  return new Date(dateString).toLocaleTimeString(undefined, { timeStyle: 'short' }) + ' Uhr'
+}

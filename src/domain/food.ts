@@ -1,7 +1,9 @@
+import Picture from './picture'
+
 export default interface Food {
     id: string
     name: string
-    pictureDataString?: string
+    picture?: Picture
     createdAt: string
     updatedAt: string
 }

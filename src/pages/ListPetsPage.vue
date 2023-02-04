@@ -18,10 +18,10 @@ onMounted(async () => {
 
 <template>
   <template v-if="pets.length">
-    <router-link v-for="pet of orderedPets" :to="{ name: 'EditPet', params: { id: pet.id }}">
+    <router-link v-for="pet of orderedPets" :to="{ name: 'ViewPet', params: { id: pet.id }}">
       <PetCard :pet="pet" />
     </router-link>
-    <router-link class="button is-primary" to="/pets/add">Weiteres Haustier hinzufügen</router-link>
+    <router-link class="button is-primary is-fullwidth" to="/pets/add">Weiteres Haustier hinzufügen</router-link>
   </template>
   <AddPetPrompt v-else />
 </template>
