@@ -42,6 +42,8 @@ const shareButtonIconClass = {
   'fa-copy': !shareSupported
 }
 
+// TODO: Remove this page and add functionality to pet list instead.
+
 async function shareInvitationLink() {
   if (shareSupported) {
     await navigator.share({

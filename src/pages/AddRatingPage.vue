@@ -31,12 +31,16 @@ const state = reactive({
 
 onMounted(async () => {
   await loadPets()
+  // TODO: Does not work on iOS.
   if (state.selectedPet === undefined && pets.value.length === 1) {
     state.selectedPet = pets.value[0]
   }
   await loadFoods()
-  
 })
+
+// TODO: Move AddPet stuff to it's own component and allow user to create new pets here?
+// TODO: Do the same for new foods on a seperate food list page.
+// TODO: Food list page can also be used to search for food or show all good ones :)
 
 async function save() {
   if (state.selectedFood === undefined) {
