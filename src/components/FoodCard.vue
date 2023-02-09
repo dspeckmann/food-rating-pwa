@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import Pet from '../domain/pet';
+import Food from '../domain/food';
 
-const props = defineProps<{ pet: Pet }>()
+const props = defineProps<{ food: Food }>()
 </script>
 
 <template>
   <div class="card mb-4">
-    <div class="card-image" v-if="pet.picture?.presignedDownloadUrl">
+    <div class="card-image" v-if="food.picture?.presignedDownloadUrl">
       <figure class="image is-square">
-        <img :src="pet.picture.presignedDownloadUrl" />
+        <img :src="food.picture.presignedDownloadUrl" />
       </figure>
     </div>
     <div class="card-content">
       <div class="content has-text-centered">
-        <h2 class="title is-4 my-0">{{ pet.name }}</h2>
+        <h2 class="title is-4 my-0">{{ food.name }}</h2>
       </div>
     </div>
   </div>

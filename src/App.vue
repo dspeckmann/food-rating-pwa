@@ -55,10 +55,12 @@ const toggleNav = () => navExpanded.value = !navExpanded.value
     </div>
     <div class="navbar-menu" :class="{ 'is-active': navExpanded }">
       <div class="navbar-start">
-        <router-link class="navbar-item" to="/">Home</router-link>
+        <router-link class="navbar-item" :to="{ name: 'Homepage' }">Home</router-link>
         <router-link class="navbar-item" :to="{ name: 'AddRating' }">Futter bewerten</router-link>
-        <router-link class="navbar-item" to="/calendar">Kalender</router-link>
-        <router-link class="navbar-item" to="/pets">Haustiere</router-link>
+        <router-link class="navbar-item" :to="{ name: 'Calendar' }">Kalender</router-link>
+        <router-link class="navbar-item" :to="{ name: 'ListPets' }">Haustiere</router-link>
+        <router-link class="navbar-item" :to="{ name: 'ListFoods' }">Futter</router-link>
+        <!-- TODO: Why does route name not work? -->
         <router-link class="navbar-item" to="/settings">Einstellungen</router-link>
       </div>
     </div>
