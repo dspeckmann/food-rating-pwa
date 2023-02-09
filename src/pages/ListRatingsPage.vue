@@ -5,6 +5,7 @@ import Pet from '../domain/pet';
 import ListRatings from '../components/ListRatings.vue'
 import { useRouter } from 'vue-router';
 import { useRatingStore } from '../stores/rating-store';
+import ProgressBar from '../components/controls/ProgressBar.vue'
 
 const axios = inject<Axios>('axios')
 if (!axios) {
@@ -48,8 +49,6 @@ async function petAdded(pet: Pet) {
     Futter bewerten
   </router-link>
   <h1 class="title mt-4">Letzte Bewertungen</h1>
-  <div v-if="isLoading" class="progress-bar-wrapper">
-    <progress class="progress is-primary mt-4" max="100"></progress>
-  </div>
+  <ProgressBar v-if="isLoading" class="mt-4" />
   <ListRatings :ratings="ratings" v-else />
 </template>

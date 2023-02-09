@@ -5,6 +5,7 @@ import Invitation from '../domain/invitation';
 import Pet from '../domain/pet';
 import InvitationService from '../services/invitation-service';
 import { usePetStore } from '../stores/pet-store'
+import ProgressBar from '../components/controls/ProgressBar.vue'
 
 const props = defineProps<{ id: string }>()
 
@@ -87,10 +88,6 @@ async function shareInvitationLink() {
     <router-link class="button is-fullwidth mb-4" :to="{ name: 'EditPet', params: { id: pet.id }}">Bearbeiten</router-link>
     <button class="button is-pulled-right mr-2" @click="router.back()">Zurück</button>
   </template>
-  <template v-else>
-    <!-- TODO: Move this to component. Do we still need the wrapper? Can we vertically center this? -->
-    <div v-if="isLoading" class="progress-bar-wrapper">
-      <progress class="progress is-primary mt-4" max="100"></progress>
-    </div>
-  </template>
+  <ProgressBar v-else class="mt-4" />
+  <!-- TOOD: Show ratings for this food -->
 </template>
