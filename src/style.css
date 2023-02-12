@@ -6,3 +6,8 @@
   margin-bottom: auto;
   text-align: center;
 }
+
+.vc-container {
+  /* Same border-radius as bulma components */
+  border-radius: 4px;
+}

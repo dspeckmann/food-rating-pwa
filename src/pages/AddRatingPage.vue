@@ -24,8 +24,8 @@ const state = reactive({
   newFoodPictureId: undefined,
   newFoodComment: '',
   ratingComment: '',
-  taste: -1, // TODO: Type?
-  wellbeing: -1, // TODO: Type?
+  taste: undefined as Taste | undefined,
+  wellbeing: undefined as Wellbeing | undefined,
   ratingPictureId: undefined
 })
 

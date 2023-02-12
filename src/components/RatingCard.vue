@@ -14,6 +14,15 @@ const pictureUrls = computed(() => {
     props.rating.pet.picture?.presignedDownloadUrl
   ].filter(url => url !== undefined)
 })
+
+function getEmoji(score: Taste | Wellbeing) {
+  console.log(props.rating)
+  switch (score as number) {
+    case 0: return '😻'
+    case 1: return '😺'
+    case 2: return '😾'
+  }
+}
 </script>
 
 <template>
@@ -26,17 +35,13 @@ const pictureUrls = computed(() => {
       <h3 class="subtitle mb-2">{{ rating.pet.name }}</h3>
       <div class="content rating-card-content">
         <div class="icon-container">
-          <div class="taste-container">
+          <div class="taste-container" v-if="rating.taste != undefined">
             Geschmack: 
-            <span v-if="rating.taste == Taste.Bad">😾</span>
-            <span v-else-if="rating.taste == Taste.Medium">😺</span>
-            <span v-else-if="rating.taste == Taste.Good">😻</span>
+            <span>{{ getEmoji(rating.taste) }}</span>
           </div>
-          <div class="taste-container">
-            Verträglichkeit
-            <span v-if="rating.wellbeing == Wellbeing.Bad">😾</span>
-            <span v-else-if="rating.wellbeing == Wellbeing.Medium">😺</span>
-            <span v-else-if="rating.wellbeing == Wellbeing.Good">😻</span>
+          <div class="taste-container" v-if="rating.wellbeing != undefined">
+            Verträglichkeit:
+            <span>{{ getEmoji(rating.wellbeing) }}</span>
           </div>
         </div>
         <div class="date-container">

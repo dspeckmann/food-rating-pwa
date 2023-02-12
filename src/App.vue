@@ -55,8 +55,7 @@ const toggleNav = () => navExpanded.value = !navExpanded.value
     </div>
     <div class="navbar-menu" :class="{ 'is-active': navExpanded }">
       <div class="navbar-start">
-        <router-link class="navbar-item" :to="{ name: 'Homepage' }">Home</router-link>
-        <router-link class="navbar-item" :to="{ name: 'AddRating' }">Futter bewerten</router-link>
+        <router-link class="navbar-item has-text-weight-bold" :to="{ name: 'AddRating' }">Futter bewerten</router-link>
         <router-link class="navbar-item" :to="{ name: 'Calendar' }">Kalender</router-link>
         <router-link class="navbar-item" :to="{ name: 'ListPets' }">Haustiere</router-link>
         <router-link class="navbar-item" :to="{ name: 'ListFoods' }">Futter</router-link>

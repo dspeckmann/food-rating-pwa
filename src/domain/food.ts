@@ -6,4 +6,6 @@ export default interface Food {
     picture?: Picture
     createdAt: string
     updatedAt: string
+    isRatedWell?: boolean
+    lastRatingDate?: string
 }

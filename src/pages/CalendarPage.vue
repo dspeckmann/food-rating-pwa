@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import 'v-calendar/dist/style.css';
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, Ref, ref } from 'vue'
 import { useRatingStore } from '../stores/rating-store'
 import RatingCard from '../components/RatingCard.vue'
 
 const { ratings, loadRatings } = useRatingStore()
 
-const selectedDate = ref(new Date())
+const selectedDate: Ref<Date | undefined> = ref(undefined)
 
 onMounted(async () => {
   await loadRatings()
@@ -37,13 +37,23 @@ const calendarAttributes = computed(() => {
 })
 
 const filteredRatings = computed(() => {
-  return ratings.value
-    .filter(r => new Date(r.createdAt).getDate() == selectedDate.value.getDate())
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  let result = ratings.value
+
+  if (selectedDate.value) {
+    result = result.filter(r => new Date(r.createdAt).getDate() == selectedDate.value.getDate())
+  }
+
+  return result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 })
 </script>
 
 <template>
+  <router-link
+    class="button is-primary is-fullwidth mb-4"
+    :to="{ name: 'AddRating' }"
+    id="add-rating-button">
+    Futter bewerten
+  </router-link>
   <v-date-picker is-expanded :attributes="calendarAttributes" v-model="selectedDate" class="mb-4" :max-date="new Date()" />
   <template v-if="filteredRatings.length">
     <RatingCard :rating="rating" v-for="rating in filteredRatings" />
