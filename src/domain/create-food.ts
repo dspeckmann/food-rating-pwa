@@ -1,5 +1,5 @@
 export default interface CreateFood {
-  name?: string
+  name: string
   comment?: string
   pictureId?: string
 }

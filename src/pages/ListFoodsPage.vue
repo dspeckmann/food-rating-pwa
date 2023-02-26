@@ -14,8 +14,7 @@ onMounted(async () => {
 const filteredFoods = computed(() => {
   let result = foods.value
 
-  if (onlyWellRated) {
-    // TODO: Does not work right now
+  if (onlyWellRated.value) {
     result = result.filter(food => food.isRatedWell)
   }
 
@@ -24,6 +23,8 @@ const filteredFoods = computed(() => {
     const lowerCaseSearchTerm = searchTerm.value.trim().toLowerCase()
     result = result.filter(food => food.name.toLowerCase().indexOf(lowerCaseSearchTerm) != -1)
   }
+
+  console.log('3', result)
 
   // TODO: Add new DTO so we it cannot be null
   return result.sort((a, b) => new Date(b.lastRatingDate!).getTime() - new Date(a.lastRatingDate!).getTime())

@@ -2,9 +2,10 @@
 import 'v-calendar/dist/style.css';
 import { computed, onMounted, Ref, ref } from 'vue'
 import { useRatingStore } from '../stores/rating-store'
-import RatingCard from '../components/RatingCard.vue'
+import ListRatings from '../components/ListRatings.vue'
+import ProgressBar from '../components/controls/ProgressBar.vue'
 
-const { ratings, loadRatings } = useRatingStore()
+const { ratings, loadRatings, isLoading } = useRatingStore()
 
 const selectedDate: Ref<Date | undefined> = ref(undefined)
 
@@ -40,7 +41,7 @@ const filteredRatings = computed(() => {
   let result = ratings.value
 
   if (selectedDate.value) {
-    result = result.filter(r => new Date(r.createdAt).getDate() == selectedDate.value.getDate())
+    result = result.filter(r => new Date(r.createdAt).getDate() == selectedDate.value!.getDate())
   }
 
   return result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -55,9 +56,8 @@ const filteredRatings = computed(() => {
     Futter bewerten
   </router-link>
   <v-date-picker is-expanded :attributes="calendarAttributes" v-model="selectedDate" class="mb-4" :max-date="new Date()" />
-  <template v-if="filteredRatings.length">
-    <RatingCard :rating="rating" v-for="rating in filteredRatings" />
-  </template>
+  <ProgressBar v-if="isLoading" class="mt-4" />
+  <ListRatings v-else-if="filteredRatings.length" :ratings="filteredRatings" />
   <div class="notification" v-else>
     An diesem Tag hast du keine Fütterung eingetragen.
   </div>

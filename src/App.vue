@@ -44,33 +44,34 @@ const toggleNav = () => navExpanded.value = !navExpanded.value
 </script>
 
 <template>
-  <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <div class="navbar-item page-title">🐈 {{ currentPageTitle }}</div>
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleNav()">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-    <div class="navbar-menu" :class="{ 'is-active': navExpanded }">
-      <div class="navbar-start">
-        <router-link class="navbar-item has-text-weight-bold" :to="{ name: 'AddRating' }">Futter bewerten</router-link>
-        <router-link class="navbar-item" :to="{ name: 'Calendar' }">Kalender</router-link>
-        <router-link class="navbar-item" :to="{ name: 'ListPets' }">Haustiere</router-link>
-        <router-link class="navbar-item" :to="{ name: 'ListFoods' }">Futter</router-link>
-        <!-- TODO: Why does route name not work? -->
-        <router-link class="navbar-item" to="/settings">Einstellungen</router-link>
-      </div>
-    </div>
-  </nav>
-  <div class="p-4 body-wrapper">
-    <div v-if="isLoading" class="progress-bar-wrapper">
-      <span class="is-center">Anmelden...</span>
-      <progress class="progress is-primary mt-4" max="100"></progress>
-    </div>
-    <RouterView v-else />
+  <div class="splashscreen" v-if="isLoading">
+    <progress class="progress is-primary mt-4" max="100"></progress>
   </div>
+  <template v-else>
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <div class="navbar-item page-title"><router-link class="mr-2" :to="{ name: 'Calendar' }">🐈</router-link> {{ currentPageTitle }}</div>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleNav()">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" :class="{ 'is-active': navExpanded }">
+        <div class="navbar-start">
+          <router-link class="navbar-item has-text-weight-bold" :to="{ name: 'AddRating' }">Futter bewerten</router-link>
+          <router-link class="navbar-item" :to="{ name: 'Calendar' }">Kalender</router-link>
+          <router-link class="navbar-item" :to="{ name: 'ListPets' }">Haustiere</router-link>
+          <router-link class="navbar-item" :to="{ name: 'ListFoods' }">Futter</router-link>
+          <!-- TODO: Why does route name not work? -->
+          <router-link class="navbar-item" to="/settings">Einstellungen</router-link>
+        </div>
+      </div>
+    </nav>
+    <div class="p-4 body-wrapper">
+      <RouterView />
+    </div>
+  </template>
 </template>
 
 <style scoped>
@@ -82,6 +83,32 @@ const toggleNav = () => navExpanded.value = !navExpanded.value
 
 nav.navbar {
   background-color: #f2f2f2;
+}
+
+.splashscreen {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.splashscreen::before {
+  content: '';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: url('./assets/paw_pattern.png');
+  filter: invert(97%) sepia(32%) saturate(234%) hue-rotate(33deg) brightness(108%) contrast(93%);
+}
+
+.splashscreen progress {
+  z-index: 5;
+  box-shadow: 0 0 30px 15px white;
 }
 
 /* TODO: Animate navigation? */

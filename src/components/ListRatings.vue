@@ -16,7 +16,6 @@ const orderedRatings = computed(() => {
 </script>
 
 <template>
-  <p class="mt-4" v-if="ratings.length < 1">Du hast noch kein Futter bewertet.</p>
   <RatingCard class="mb-4" v-for="rating of orderedRatings" :rating="rating"></RatingCard>
 </template>
 

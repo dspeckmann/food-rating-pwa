@@ -16,11 +16,10 @@ const pictureUrls = computed(() => {
 })
 
 function getEmoji(score: Taste | Wellbeing) {
-  console.log(props.rating)
   switch (score as number) {
-    case 0: return '😻'
-    case 1: return '😺'
-    case 2: return '😾'
+    case 1: return '😻'
+    case 2: return '😺'
+    case 3: return '😾'
   }
 }
 </script>

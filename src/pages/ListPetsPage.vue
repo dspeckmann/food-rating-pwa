@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import AddPetPrompt from '../components/AddPetPrompt.vue'
 import { usePetStore } from '../stores/pet-store'
 import PetCard from '../components/PetCard.vue'
 
-const { pets, loadPets, isLoading } = usePetStore()
+const { pets, loadPets } = usePetStore()
 
 const orderedPets = computed(() => {
-  console.log(pets.value)
   return pets.value.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 })
 

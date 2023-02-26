@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive } from 'vue';
+import { computed, inject, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import PictureUploadControl from '../components/controls/PictureUploadControl.vue';
 import CreateFood from '../domain/create-food';
@@ -8,6 +8,7 @@ import Food from '../domain/food';
 import Pet from '../domain/pet';
 import Taste from '../domain/taste';
 import Wellbeing from '../domain/wellbeing';
+import SettingsService from '../services/settings/settings-service';
 import { useFoodStore } from '../stores/food-store';
 import { usePetStore } from '../stores/pet-store';
 import { useRatingStore } from '../stores/rating-store';
@@ -69,6 +70,12 @@ async function save() {
 const isLoadingPets = computed(() => pets.value.length < 1 && petStoreLoading.value)
 const isLoadingFoods = computed(() => foods.value.length < 1 && foodStoreLoading.value)
 
+const settingsService = inject<SettingsService>('SettingsService')
+if (!settingsService) {
+  throw new Error('Error while loading settings service.')
+}
+const settings = settingsService.getSettings().ratingSettings
+
 // TODO: Actually validate form
 const submitDisabled = computed(() => isLoadingPets.value || isLoadingFoods.value || ratingStoreLoading.value || state.selectedPet === undefined)
 </script>
@@ -102,19 +109,18 @@ const submitDisabled = computed(() => isLoadingPets.value || isLoadingFoods.valu
         <input class="input is-fullwidth" type="text" placeholder="Name des neuen Futters" v-model="state.newFoodName">
       </div>
     </div>
-    <div class="field">
+    <div class="field" v-if="settings.showFoodPicture">
       <label class="label" for="pet-picture">Wie sieht die Verpackung des neuen Futters aus?</label>
       <PictureUploadControl v-model="state.newFoodPictureId" />
     </div>
-    <div class="field">
+    <div class="field" v-if="settings.showFoodComment">
       <label class="label">Hast du allgemeine Anmerkungen zu diesem Futter?</label>
       <div class="control">
         <textarea class="textarea is-fullwidth" placeholder="Anmerkungen zum Futter" v-model="state.newFoodComment"></textarea>
       </div>
     </div>
   </template>
-  <!-- TODO: Picture of new food -->
-  <div class="field">
+  <div class="field" v-if="settings.showTaste">
     <label class="label">Wie hat {{ state.selectedPet ? state.selectedPet.name : 'deinem Haustier' }} das Futter geschmeckt?</label>
     <div class="control radio-container">
       <label class="radio">
@@ -131,7 +137,7 @@ const submitDisabled = computed(() => isLoadingPets.value || isLoadingFoods.valu
       </label>
     </div>
   </div>
-  <div class="field">
+  <div class="field" v-if="settings.showWellbeing">
     <label class="label">Wie hat {{ state.selectedPet ? state.selectedPet.name : 'dein Haustier' }} das Futter vertragen?</label>
     <div class="control radio-container">
       <label class="radio">
@@ -148,11 +154,11 @@ const submitDisabled = computed(() => isLoadingPets.value || isLoadingFoods.valu
       </label>
     </div>
   </div>
-  <div class="field">
+  <div class="field" v-if="settings.showPicture">
     <label class="label" for="pet-picture">Wie sah das Futter in der Schale aus?</label>
     <PictureUploadControl v-model="state.ratingPictureId" />
   </div>
-  <div class="field">
+  <div class="field"  v-if="settings.showComment">
     <label class="label">Hast du weitere Anmerkungen zu dieser Fütterung?</label>
     <div class="control">
       <textarea class="textarea is-fullwidth" placeholder="Sonstige Anmerkungen zur Fütterung" v-model="state.ratingComment"></textarea>
