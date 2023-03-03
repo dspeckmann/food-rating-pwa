@@ -12,21 +12,11 @@ const pet: Ref<Pet | undefined> = ref(undefined)
 const showError = ref(false)
 
 onMounted(async () => {
-  pet.value = {
-    id: 'abc123',
-    name: 'Thorsten',
-    picture: {
-      id: '123',
-      presignedDownloadUrl: 'https://www.hellabrunn.de/fileadmin/_processed_/d/8/csm_wasserschwein-tierpark-hellabrunn-amerika-tierlexikon_aa0360216f.jpg'
-    },
-    createdAt: '',
-    updatedAt: ''
+  try {
+    pet.value = await invitationService?.acceptInvitation(props.id);
+  } catch (_) {
+    showError.value = true
   }
-  // try {
-  //   pet.value = await invitationService!.acceptInvitation(props.id)
-  // } catch(e_) {
-  //   showError.value = true
-  // }
 })
 </script>
 
@@ -38,6 +28,7 @@ onMounted(async () => {
     <router-link class="button is-primary is-fullwidth" to="/">Zurück zur Startseite</router-link>
   </template>
   <div class="notification is-danger" v-else-if="showError">
+    Die Einladung war ungültig oder ist bereits abgelaufen. Bitte den Besitzer darum, dir einen neuen Link zuzuschicken.
   </div>
   <div v-else>
     <!-- TODO: Show loading indicator/animation -->
