@@ -9,6 +9,7 @@ import routes from './routes'
 import VCalendar from 'v-calendar';
 import InvitationService from './services/invitation-service'
 import SettingsService from './services/settings/settings-service'
+import * as Sentry from '@sentry/vue'
 
 // Load config file for environment-specific settings.
 const response = await fetch('/config.json')
@@ -29,11 +30,28 @@ app.use(
     })
 )
 
-app.use(createRouter({
+const router = createRouter({
     history: createWebHistory(),
     routes,
     linkActiveClass: 'is-active'
-}))
+})
+
+if (config.sentry?.dsn) {
+    Sentry.init({
+        app,
+        dsn: config.sentry.dsn,
+        integrations: [
+          Sentry.browserTracingIntegration({ router }),
+          Sentry.replayIntegration(),
+        ],
+        tracesSampleRate: config.sentry.tracesSampleRate ?? 0,
+        tracePropagationTargets: [config.apiBaseUrl ?? "localhost"],
+        replaysSessionSampleRate: 0.1,
+        replaysOnErrorSampleRate: 1.0,
+    })
+}
+
+app.use(router)
 
 app.use(VCalendar, {})
 

@@ -3,5 +3,9 @@
         "domain": "auth.example.org",
         "clientId": "abcd1234",
         "audience": "http://localhost:5000"
+    },
+    "sentry": {
+        "dsn": "https://example@example.ingest.de.sentry.io/1234",
+        "tracesSampleRate": 0.5
     }
 }
